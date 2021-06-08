@@ -106,6 +106,7 @@ public class LoginController implements Initializable {
         stage.setTitle(title);
         stage.getIcons().add(new Image("/images/logo.png"));
         stage.setScene(scene);
+        stage.setMaximized(true);
         stage.show();
     }
 

@@ -25,7 +25,7 @@ import javafx.stage.Stage;
 public class EditController implements Initializable, ProductInterface {
 
     @FXML
-    private TextField nameField, priceField, quantityField;
+    private TextField nameField, priceField, quantityField, barcodeField;
     @FXML
     private TextArea descriptionArea;
     @FXML
@@ -79,7 +79,8 @@ public class EditController implements Initializable, ProductInterface {
                     Double.parseDouble(quantityField.getText()),
                     descriptionArea.getText(),
                     category,
-                    supplier
+                    supplier,
+                    barcodeField.getText()
             );
 
             productModel.updateProduct(editedProduct);

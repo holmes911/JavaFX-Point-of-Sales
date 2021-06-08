@@ -1,5 +1,9 @@
 package com.rafsan.inventory.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +14,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "employees")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Employee implements Serializable {
  
     @Id
@@ -29,10 +36,6 @@ public class Employee implements Serializable {
     private String address;
     @Column(name = "type", insertable = false)
     private String type;
-    
-    public Employee(){
-    
-    }
 
     public Employee(String firstName, String lastName, String userName, String password, String phone, String address) {
         this.firstName = firstName;
@@ -54,80 +57,5 @@ public class Employee implements Serializable {
         this.address = address;
     }
 
-    public Employee(long id, String firstName, String lastName, 
-            String userName, String password, String phone, String address, String type) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.userName = userName;
-        this.password = password;
-        this.phone = phone;
-        this.address = address;
-        this.type = type;
-    }
-    
-    public long getId() {
-        return id;
-    }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-    
 }

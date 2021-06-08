@@ -105,6 +105,10 @@ public class PosController implements Initializable, ProductInterface {
                         return true;
                     } else if (product.getDescription().toLowerCase().contains(lowerCaseFilter)) {
                         return true;
+                    } else if (product.getSupplier().getName().toLowerCase().contains(lowerCaseFilter)) {
+                        return true;
+                    } else if (product.getBarcode().toLowerCase().contains(lowerCaseFilter)) {
+                        return true;
                     }
                     return false;
                 });

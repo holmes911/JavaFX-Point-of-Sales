@@ -1,5 +1,9 @@
 package com.rafsan.inventory.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,6 +17,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "products")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Product implements Serializable {
  
     @Id
@@ -27,6 +34,8 @@ public class Product implements Serializable {
     private double quantity;
     @Column(name = "description")
     private String description;
+    @Column(name = "barcode")
+    private String barcode;
     
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "categoryId")
@@ -36,11 +45,8 @@ public class Product implements Serializable {
     @JoinColumn(name = "supplierId")
     private Supplier supplier;
 
-    public Product() {
-    }
-
-    public Product(long id, String productName, double price, 
-            double quantity, String description, Category category, Supplier supplier) {
+    public Product(long id, String productName, double price,
+            double quantity, String description, Category category, Supplier supplier, String barcode) {
         this.id = id;
         this.productName = productName;
         this.price = price;
@@ -48,82 +54,17 @@ public class Product implements Serializable {
         this.description = description;
         this.category = category;
         this.supplier = supplier;
+        this.barcode = barcode;
     }
 
-    public Product(String productName, double price, 
-            double quantity, String description, Category category, Supplier supplier) {
+    public Product(String productName, double price,
+            double quantity, String description, Category category, Supplier supplier, String barcode) {
         this.productName = productName;
         this.price = price;
         this.quantity = quantity;
         this.description = description;
         this.category = category;
         this.supplier = supplier;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public double getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(double quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public Supplier getSupplier() {
-        return supplier;
-    }
-
-    public void setSupplier(Supplier supplier) {
-        this.supplier = supplier;
-    }
-
-    @Override
-    public String toString() {
-        return "Product{" + "id=" + id + 
-                ", productName=" + productName + 
-                ", price=" + price + 
-                ", quantity=" + quantity + 
-                ", description=" + description + 
-                ", category=" + category + 
-                ", supplier=" + supplier + '}';
+        this.barcode = barcode;
     }
 }

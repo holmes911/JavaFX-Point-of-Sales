@@ -84,6 +84,13 @@
                   </TextField>
                   <Label text="Supplier" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
                   <ComboBox fx:id="supplierBox" prefHeight="25.0" prefWidth="200.0" promptText="-Supplier-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                   <Label text="Barcode" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+                   <TextField fx:id="barcodeField" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                       <GridPane.margin>
+                           <Insets right="10.0" />
+                       </GridPane.margin>
+                   </TextField>
                </children>
             </GridPane>
          </children>

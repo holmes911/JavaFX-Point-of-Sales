@@ -1,5 +1,9 @@
 package com.rafsan.inventory.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +14,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "categories")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Category implements Serializable {
     
     @Id
@@ -20,43 +27,10 @@ public class Category implements Serializable {
     private String type;
     @Column(name = "description")
     private String description;
-    
-    public Category(){
-    
-    }
-    
+
     public Category(String type, String description) {
         this.type = type;
         this.description = description;
     }
 
-    public Category(long id, String type, String description) {
-        this.id = id;
-        this.type = type;
-        this.description = description;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }
