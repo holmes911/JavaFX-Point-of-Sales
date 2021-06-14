@@ -5,6 +5,9 @@ import com.rafsan.inventory.entity.Payment;
 import com.rafsan.inventory.entity.Product;
 import com.rafsan.inventory.model.ProductModel;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Formatter;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -32,6 +35,7 @@ import javafx.scene.Node;
 import com.rafsan.inventory.interfaces.ProductInterface;
 import static com.rafsan.inventory.interfaces.ProductInterface.PRODUCTLIST;
 import javafx.scene.input.MouseEvent;
+import org.apache.commons.math3.util.Precision;
 import javafx.stage.StageStyle;
 
 public class PosController implements Initializable, ProductInterface {
@@ -59,6 +63,7 @@ public class PosController implements Initializable, ProductInterface {
     @FXML
     private ObservableList<Item> ITEMLIST;
     private ProductModel productModel;
+    DecimalFormat df =new DecimalFormat("0.00");
 
     private double xOffset = 0;
     private double yOffset = 0;
@@ -108,6 +113,8 @@ public class PosController implements Initializable, ProductInterface {
                     } else if (product.getSupplier().getName().toLowerCase().contains(lowerCaseFilter)) {
                         return true;
                     } else if (product.getBarcode().toLowerCase().contains(lowerCaseFilter)) {
+                        productTableView.getSelectionModel().select(product);
+                        showDetails(product);
                         return true;
                     }
                     return false;
@@ -132,18 +139,19 @@ public class PosController implements Initializable, ProductInterface {
         if (product != null) {
             quantityField.setDisable(false);
             productField.setText(product.getProductName());
-            priceField.setText(String.valueOf(product.getPrice()));
+            priceField.setText(String.valueOf(df.format(product.getPrice())));
 
             double quantity = product.getQuantity();
 
             if (quantity > 0) {
                 quantityField.setEditable(true);
                 quantityField.setStyle(null);
+                quantityField.setText("1");
             } else {
                 quantityField.setEditable(false);
                 quantityField.setStyle("-fx-background-color: red;");
             }
-            quantityLabel.setText("Stock: " + String.valueOf(quantity));
+            quantityLabel.setText("Stock: " + String.valueOf((int)quantity));
             descriptionArea.setText(product.getDescription());
         } else {
             productField.setText("");
@@ -168,6 +176,7 @@ public class PosController implements Initializable, ProductInterface {
         resetQuantityField();
         quantityLabel.setText("Available: ");
         descriptionArea.setText("");
+        searchField.setText(null);
     }
 
     private void resetInvoice() {
@@ -201,13 +210,16 @@ public class PosController implements Initializable, ProductInterface {
 
     @FXML
     public void addAction(ActionEvent event) {
+        addAction();
+    }
 
+    private void addAction() {
         if (validateInput()) {
             String productName = productField.getText();
             double unitPrice = Double.parseDouble(priceField.getText());
             double quantity = Double.parseDouble(quantityField.getText());
             double total = unitPrice * quantity;
-            ITEMLIST.add(new Item(productName, unitPrice, quantity, total));
+            ITEMLIST.add(new Item(productName, Precision.round(unitPrice,2), quantity, Precision.round(total,2)));
             calculation();
 
             resetAdd();
@@ -223,12 +235,12 @@ public class PosController implements Initializable, ProductInterface {
 
         if (subTotalPrice > 0) {
             paymentButton.setDisable(false);
-            double vat = (double) subTotalPrice * 0.025;
-            double netPayablePrice = (double) (Math.abs((subTotalPrice + vat) - 5));
+            double vat = 0;// (double) subTotalPrice;// * 0.025;
+            double netPayablePrice = (double) (Math.abs((subTotalPrice + vat)));
 
-            subTotalField.setText(String.valueOf(subTotalPrice));
-            vatField.setText(String.valueOf(vat));
-            netPayableField.setText(String.valueOf(netPayablePrice));
+            subTotalField.setText(String.valueOf(df.format(subTotalPrice)));
+            vatField.setText(String.valueOf(df.format(vat)));
+            netPayableField.setText(String.valueOf(df.format(netPayablePrice)));
         }
     }
 

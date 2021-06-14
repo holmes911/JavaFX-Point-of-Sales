@@ -5,6 +5,7 @@ import com.rafsan.inventory.entity.Item;
 import com.rafsan.inventory.entity.Payment;
 import com.rafsan.inventory.entity.Product;
 import com.rafsan.inventory.entity.Sale;
+import com.rafsan.inventory.ipos.IPOSTransaction;
 import com.rafsan.inventory.model.EmployeeModel;
 import com.rafsan.inventory.model.InvoiceModel;
 import com.rafsan.inventory.model.ProductModel;
@@ -26,6 +27,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class InvoiceController implements Initializable {
 
@@ -41,6 +44,8 @@ public class InvoiceController implements Initializable {
 
     private double xOffset = 0;
     private double yOffset = 0;
+
+    IPOSTransaction iposTransaction;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -119,6 +124,166 @@ public class InvoiceController implements Initializable {
             stage.show();
         }
 
+    }
+
+    @FXML
+    public void ecocashTransaction(ActionEvent event) throws Exception {
+        paidAmountField.setText(totalAmountField.getText());
+
+        JSONObject request = new JSONObject();
+        request.put("saleAmount", Double.parseDouble(totalAmountField.getText()) * 100);
+        request.put("cashBack", "0");
+        request.put("posUser", "");
+        request.put("tenderType", "MOBILE");
+        request.put("currency", "RTGS");
+        request.put("transactionId", "0001");
+
+        iposTransaction = new IPOSTransaction();
+        JSONObject result = iposTransaction.makeTransaction(request);
+
+        if (result.get("code").equals("00")){
+            double paid = Double.parseDouble(paidAmountField.getText().trim());
+            double retail = Math.abs(paid - netPrice);
+
+            String invoiceId = String.valueOf(new Timestamp(System.currentTimeMillis()).getTime());
+
+            Invoice invoice = new Invoice(
+                    invoiceId,
+                    employeeModel.getEmployee(2),
+                    payment.getSubTotal(),
+                    payment.getVat(),
+                    payment.getDiscount(),
+                    payment.getPayable(),
+                    paid,
+                    retail
+            );
+
+            invoiceModel.saveInvoice(invoice);
+
+            for (Item i : items) {
+
+                Product p = productModel.getProductByName(i.getItemName());
+                double quantity = p.getQuantity() - i.getQuantity();
+                p.setQuantity(quantity);
+                productModel.decreaseProduct(p);
+
+                Sale sale = new Sale(
+                        invoiceModel.getInvoice(invoiceId),
+                        productModel.getProductByName(i.getItemName()),
+                        i.getQuantity(),
+                        i.getUnitPrice(),
+                        i.getTotal()
+                );
+
+                salesModel.saveSale(sale);
+            }
+
+            FXMLLoader loader = new FXMLLoader((getClass().getResource("/fxml/Confirm.fxml")));
+            ConfirmController controller = new ConfirmController();
+            controller.setData(retail, items, invoiceId);
+            loader.setController(controller);
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            root.setOnMousePressed((MouseEvent e) -> {
+                xOffset = e.getSceneX();
+                yOffset = e.getSceneY();
+            });
+            root.setOnMouseDragged((MouseEvent e) -> {
+                stage.setX(e.getScreenX() - xOffset);
+                stage.setY(e.getScreenY() - yOffset);
+            });
+            stage.setTitle("Confirm");
+            stage.getIcons().add(new Image("/images/logo.png"));
+            stage.setScene(scene);
+            stage.show();
+        }else{
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Alert");
+            alert.setHeaderText("Transaction Failed");
+            alert.setContentText("[" + result.get("code") + "] " + result.get("description"));
+            alert.showAndWait();
+        }
+    }
+
+    @FXML
+    public void bankCardTransaction(ActionEvent event) throws Exception {
+        paidAmountField.setText(totalAmountField.getText());
+
+        JSONObject request = new JSONObject();
+        request.put("saleAmount", Double.parseDouble(totalAmountField.getText()) * 100);
+        request.put("cashBack", "0");
+        request.put("posUser", "");
+        request.put("tenderType", "SWIPE");
+        request.put("currency", "RTGS");
+        request.put("transactionId", "0001");
+
+        iposTransaction = new IPOSTransaction();
+        JSONObject result = iposTransaction.makeTransaction(request);
+
+        if (result.get("code").equals("00")){
+            double paid = Double.parseDouble(paidAmountField.getText().trim());
+            double retail = Math.abs(paid - netPrice);
+
+            String invoiceId = String.valueOf(new Timestamp(System.currentTimeMillis()).getTime());
+
+            Invoice invoice = new Invoice(
+                    invoiceId,
+                    employeeModel.getEmployee(2),
+                    payment.getSubTotal(),
+                    payment.getVat(),
+                    payment.getDiscount(),
+                    payment.getPayable(),
+                    paid,
+                    retail
+            );
+
+            invoiceModel.saveInvoice(invoice);
+
+            for (Item i : items) {
+
+                Product p = productModel.getProductByName(i.getItemName());
+                double quantity = p.getQuantity() - i.getQuantity();
+                p.setQuantity(quantity);
+                productModel.decreaseProduct(p);
+
+                Sale sale = new Sale(
+                        invoiceModel.getInvoice(invoiceId),
+                        productModel.getProductByName(i.getItemName()),
+                        i.getQuantity(),
+                        i.getUnitPrice(),
+                        i.getTotal()
+                );
+
+                salesModel.saveSale(sale);
+            }
+
+            FXMLLoader loader = new FXMLLoader((getClass().getResource("/fxml/Confirm.fxml")));
+            ConfirmController controller = new ConfirmController();
+            controller.setData(retail, items, invoiceId);
+            loader.setController(controller);
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            root.setOnMousePressed((MouseEvent e) -> {
+                xOffset = e.getSceneX();
+                yOffset = e.getSceneY();
+            });
+            root.setOnMouseDragged((MouseEvent e) -> {
+                stage.setX(e.getScreenX() - xOffset);
+                stage.setY(e.getScreenY() - yOffset);
+            });
+            stage.setTitle("Confirm");
+            stage.getIcons().add(new Image("/images/logo.png"));
+            stage.setScene(scene);
+            stage.show();
+        }else{
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Alert");
+            alert.setHeaderText("Transaction Failed");
+            alert.setContentText("[" + result.get("code") + "] " + result.get("description"));
+            alert.showAndWait();
+        }
     }
 
     private boolean validateInput() {

@@ -3,6 +3,7 @@ package com.rafsan.inventory.controller.pos;
 import com.rafsan.inventory.entity.Item;
 import com.rafsan.inventory.pdf.PrintInvoice;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,21 +23,31 @@ public class ConfirmController implements Initializable {
     private double retail;
     private ObservableList<Item> items;
     private String barcode;
+    DecimalFormat df =new DecimalFormat("0.00");
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        retailLabel.setText("Change: $" + retail);
+        retailLabel.setText("Change: $" + df.format(retail));
 
+        String name;
         StringBuilder details = new StringBuilder("Item Name\t\t" + "Cost\t\t" + "Quantity\t\t" + "Total\n");
 
         for (Item i : items) {
-            details.append(i.getItemName())
+            name = i.getItemName();
+            if (name.length() > 7){
+                name = name.substring(0, 7);
+            }else if (name.length() < 7){
+                for (int x = name.length(); x < 7; x++){
+                    name = name + " ";
+                }
+            }
+            details.append(name)
                     .append("\t\t\t")
-                    .append(i.getUnitPrice())
+                    .append(df.format(i.getUnitPrice()))
                     .append("\t\t\t")
-                    .append(i.getQuantity())
+                    .append((int)i.getQuantity())
                     .append("\t\t\t")
-                    .append(i.getTotal())
+                    .append(df.format(i.getTotal()))
                     .append("\n");
         }
 

@@ -14,6 +14,8 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.rafsan.inventory.entity.Item;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.text.DecimalFormat;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -21,6 +23,7 @@ public class PrintInvoice {
 
     private final ObservableList<Item> items;
     private final String barcode;
+    DecimalFormat df =new DecimalFormat("0.00");
 
     public PrintInvoice(ObservableList<Item> items, String barcode) {
         this.items = FXCollections.observableArrayList(items);
@@ -56,7 +59,7 @@ public class PrintInvoice {
     }
 
     private PdfPTable createTable() {
-
+        double total = 0;
         PdfPTable table = new PdfPTable(4);
         PdfPCell c1 = new PdfPCell(new Phrase("Item"));
         c1.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -77,10 +80,16 @@ public class PrintInvoice {
 
         for (Item i : items) {
             table.addCell(i.getItemName());
-            table.addCell(String.valueOf(i.getUnitPrice()));
+            table.addCell(String.valueOf(df.format(i.getUnitPrice())));
             table.addCell(String.valueOf(i.getQuantity()));
-            table.addCell(String.valueOf(i.getTotal()));
+            table.addCell(String.valueOf(df.format(i.getTotal())));
+            total = total + i.getTotal();
         }
+
+        table.addCell("TOTAL");
+        table.addCell("");
+        table.addCell("");
+        table.addCell(String.valueOf(df.format(total)));
 
         return table;
     }

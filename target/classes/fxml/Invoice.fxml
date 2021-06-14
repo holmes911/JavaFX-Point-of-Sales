@@ -35,9 +35,11 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <TextField fx:id="totalAmountField" alignment="CENTER" editable="false" />
-                  <TextField fx:id="paidAmountField" alignment="CENTER" promptText="Paid Amount" GridPane.rowIndex="1" />
-                  <Button mnemonicParsing="false" onAction="#confirmAction" prefHeight="44.0" prefWidth="351.0" styleClass="buttons" text="Checkout" GridPane.rowIndex="2" />
+                <TextField fx:id="totalAmountField" alignment="CENTER" editable="false" />
+                <TextField fx:id="paidAmountField" alignment="CENTER" promptText="Paid Amount" GridPane.rowIndex="1" />
+                <Button mnemonicParsing="false" onAction="#confirmAction" prefHeight="44.0" prefWidth="351.0" styleClass="buttons" text="CASH" GridPane.rowIndex="2" />
+                <Button mnemonicParsing="false" onAction="#ecocashTransaction" prefHeight="44.0" prefWidth="351.0" styleClass="buttons" text="ECOCASH" GridPane.rowIndex="3" />
+                <Button mnemonicParsing="false" onAction="#bankCardTransaction" prefHeight="44.0" prefWidth="351.0" styleClass="buttons" text="ZIMSWITCH" GridPane.rowIndex="4" />
                </children>
             </GridPane>
          </children>
