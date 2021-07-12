@@ -9,6 +9,8 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Formatter;
 import java.util.ResourceBundle;
+
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -64,6 +66,7 @@ public class PosController implements Initializable, ProductInterface {
     private ObservableList<Item> ITEMLIST;
     private ProductModel productModel;
     DecimalFormat df =new DecimalFormat("0.00");
+    boolean barcodeRead = false;
 
     private double xOffset = 0;
     private double yOffset = 0;
@@ -94,9 +97,12 @@ public class PosController implements Initializable, ProductInterface {
         removeButton
                 .disableProperty()
                 .bind(Bindings.isEmpty(listTableView.getSelectionModel().getSelectedItems()));
+
+        searchRequestFocus();
     }
 
     private void filterData() {
+        barcodeRead = false;
         FilteredList<Product> searchedData = new FilteredList<>(PRODUCTLIST, e -> true);
 
         searchField.setOnKeyReleased(e -> {
@@ -113,6 +119,7 @@ public class PosController implements Initializable, ProductInterface {
                     } else if (product.getSupplier().getName().toLowerCase().contains(lowerCaseFilter)) {
                         return true;
                     } else if (product.getBarcode().toLowerCase().contains(lowerCaseFilter)) {
+                        barcodeRead = true;
                         productTableView.getSelectionModel().select(product);
                         showDetails(product);
                         return true;
@@ -177,12 +184,22 @@ public class PosController implements Initializable, ProductInterface {
         quantityLabel.setText("Available: ");
         descriptionArea.setText("");
         searchField.setText(null);
+        searchRequestFocus();
     }
 
     private void resetInvoice() {
         subTotalField.setText("0.00");
         vatField.setText("0.00");
         netPayableField.setText("0.00");
+    }
+
+    public void searchRequestFocus(){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                searchField.requestFocus();
+            }
+        });
     }
 
     private void resetQuantityField() {

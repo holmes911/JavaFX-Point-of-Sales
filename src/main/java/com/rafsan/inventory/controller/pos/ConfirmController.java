@@ -2,6 +2,9 @@ package com.rafsan.inventory.controller.pos;
 
 import com.rafsan.inventory.entity.Item;
 import com.rafsan.inventory.pdf.PrintInvoice;
+
+import java.awt.print.PrinterException;
+import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ResourceBundle;
@@ -65,6 +68,13 @@ public class ConfirmController implements Initializable {
         billingArea.setText("");
         PrintInvoice pi = new PrintInvoice(items, barcode);
         pi.generateReport();
+        try {
+            pi.printReceipt();
+        } catch (PrinterException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         ((Node) (event.getSource())).getScene().getWindow().hide();
     }
 }

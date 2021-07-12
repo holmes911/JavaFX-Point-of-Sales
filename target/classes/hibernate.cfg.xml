@@ -15,5 +15,6 @@
         <mapping class="com.rafsan.inventory.entity.Purchase"/>
         <mapping class="com.rafsan.inventory.entity.Sale"/>
         <mapping class="com.rafsan.inventory.entity.Supplier"/>
+        <mapping class="com.rafsan.inventory.entity.Licence"/>
     </session-factory>
 </hibernate-configuration>

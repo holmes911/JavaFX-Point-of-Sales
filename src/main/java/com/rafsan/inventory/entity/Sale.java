@@ -44,6 +44,8 @@ public class Sale implements Serializable {
     private double total;
     @Column(name = "datetime", insertable=false)
     private String date;
+    @Column(name = "rrn")
+    private String rrn;
 
     public Sale(Invoice invoice, Product product, double quantity, double price, double total) {
         this.invoice = invoice;
@@ -52,5 +54,15 @@ public class Sale implements Serializable {
         this.price = price;
         this.total = total;
     }
-    
+
+    public Sale(long id, Invoice invoice, Product product, double quantity, double price, double total, String date, String rrn) {
+        this.id = id;
+        this.invoice = invoice;
+        this.product = product;
+        this.quantity = quantity;
+        this.price = price;
+        this.total = total;
+        this.date = date;
+        this.rrn = rrn;
+    }
 }

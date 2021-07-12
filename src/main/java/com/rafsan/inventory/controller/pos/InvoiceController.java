@@ -12,6 +12,7 @@ import com.rafsan.inventory.model.ProductModel;
 import com.rafsan.inventory.model.SalesModel;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -47,13 +48,15 @@ public class InvoiceController implements Initializable {
 
     IPOSTransaction iposTransaction;
 
+    DecimalFormat df =new DecimalFormat("0.00");
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         productModel = new ProductModel();
         employeeModel = new EmployeeModel();
         salesModel = new SalesModel();
         invoiceModel = new InvoiceModel();
-        totalAmountField.setText(String.valueOf(netPrice));
+        totalAmountField.setText(String.valueOf(df.format(netPrice)));
     }
 
     public void setData(double netPrice, ObservableList<Item> items, Payment payment) {
