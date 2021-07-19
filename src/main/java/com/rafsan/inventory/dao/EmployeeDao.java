@@ -13,4 +13,5 @@ public interface EmployeeDao {
     public void deleteEmployee(Employee employee);
     public boolean checkPassword(String username,String password);
     public boolean checkUser(String username);
+    public String getEmployeeTypeBySupervisor(String supervisorCode);
 }

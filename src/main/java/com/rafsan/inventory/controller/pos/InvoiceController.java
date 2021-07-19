@@ -175,7 +175,13 @@ public class InvoiceController implements Initializable {
                         productModel.getProductByName(i.getItemName()),
                         i.getQuantity(),
                         i.getUnitPrice(),
-                        i.getTotal()
+                        i.getTotal(),
+                        result.getString("rrn"),
+                        result.getString("code") + " : " + result.getString("description"),
+                        result.getString("ref"),
+                        result.getString("imei"),
+                        result.getString("pan"),
+                        "ECOCASH"
                 );
 
                 salesModel.saveSale(sale);
@@ -255,7 +261,13 @@ public class InvoiceController implements Initializable {
                         productModel.getProductByName(i.getItemName()),
                         i.getQuantity(),
                         i.getUnitPrice(),
-                        i.getTotal()
+                        i.getTotal(),
+                        result.getString("rrn"),
+                        result.getString("code") + " : " + result.getString("description"),
+                        result.getString("ref"),
+                        result.getString("imei"),
+                        result.getString("pan"),
+                        "ZIMSWITCH"
                 );
 
                 salesModel.saveSale(sale);

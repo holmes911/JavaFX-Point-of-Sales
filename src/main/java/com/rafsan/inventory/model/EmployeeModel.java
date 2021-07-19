@@ -52,6 +52,19 @@ public class EmployeeModel implements EmployeeDao {
     }
 
     @Override
+    public String getEmployeeTypeBySupervisor(String supervisorCode){
+
+        session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        Query query = session.createQuery("from Employee where supervisorCode = :supervisorCode");
+        query.setParameter("supervisorCode", supervisorCode);
+        Employee employee = (Employee) query.uniqueResult();
+        session.getTransaction().commit();
+
+        return employee.getType();
+    }
+
+    @Override
     public void saveEmployee(Employee employee) {
 
         session = HibernateUtil.getSessionFactory().getCurrentSession();
@@ -72,6 +85,7 @@ public class EmployeeModel implements EmployeeDao {
         e.setPassword(employee.getPassword());
         e.setPhone(employee.getPhone());
         e.setAddress(employee.getAddress());
+        e.setSupervisorCode(employee.getSupervisorCode());
         session.getTransaction().commit();
     }
 
@@ -109,5 +123,16 @@ public class EmployeeModel implements EmployeeDao {
         session.getTransaction().commit();
 
         return employee.getPassword().equals(password);
+    }
+
+    public boolean checkSupervisorUser(String supervisorCode) {
+        session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        Query query = session.createQuery("from Employee where supervisorCode = :supervisorCode");
+        query.setParameter("supervisorCode", supervisorCode);
+        Employee employee = (Employee) query.uniqueResult();
+        session.getTransaction().commit();
+
+        return employee != null;
     }
 }

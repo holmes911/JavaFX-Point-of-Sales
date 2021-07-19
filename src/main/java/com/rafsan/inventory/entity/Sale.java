@@ -19,7 +19,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "sales")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class Sale implements Serializable {
 
@@ -46,6 +45,16 @@ public class Sale implements Serializable {
     private String date;
     @Column(name = "rrn")
     private String rrn;
+    @Column(name = "description")
+    private String description;
+    @Column(name = "reference")
+    private String reference;
+    @Column(name = "imei")
+    private String imei;
+    @Column(name = "pan")
+    private String pan;
+    @Column(name = "channel")
+    private String channel;
 
     public Sale(Invoice invoice, Product product, double quantity, double price, double total) {
         this.invoice = invoice;
@@ -53,9 +62,24 @@ public class Sale implements Serializable {
         this.quantity = quantity;
         this.price = price;
         this.total = total;
+        this.channel = "CASH";
     }
 
-    public Sale(long id, Invoice invoice, Product product, double quantity, double price, double total, String date, String rrn) {
+    public Sale(Invoice invoice, Product product, double quantity, double price, double total, String rrn, String description, String reference, String imei, String pan, String channel) {
+        this.invoice = invoice;
+        this.product = product;
+        this.quantity = quantity;
+        this.price = price;
+        this.total = total;
+        this.rrn = rrn;
+        this.description = description;
+        this.reference = reference;
+        this.imei = imei;
+        this.pan = pan;
+        this.channel = channel;
+    }
+
+    public Sale(long id, Invoice invoice, Product product, double quantity, double price, double total, String date) {
         this.id = id;
         this.invoice = invoice;
         this.product = product;
@@ -63,6 +87,6 @@ public class Sale implements Serializable {
         this.price = price;
         this.total = total;
         this.date = date;
-        this.rrn = rrn;
+        this.channel = "CASH";
     }
 }

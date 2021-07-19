@@ -47,6 +47,10 @@ public class PrintInvoice {
         Licence licence = licenceModel.getLicence(1);
         try {
             Document document = new Document();
+            document.setPageSize(PageSize.A7);
+            document.setMargins(0,0,0,0);
+
+
             FileOutputStream fs = new FileOutputStream("Report.pdf");
             PdfWriter writer = PdfWriter.getInstance(document, fs);
             document.open();
@@ -58,45 +62,46 @@ public class PrintInvoice {
             codeEAN.setTextAlignment(Element.ALIGN_CENTER);
             document.add(codeEAN.createImageWithBarcode(cb, BaseColor.BLACK, BaseColor.DARK_GRAY));
 
-            Paragraph paragraph = new Paragraph(licence.getCompany());
+            Font f=new Font(Font.FontFamily.TIMES_ROMAN,9.0f,Font.BOLD,BaseColor.BLACK);
+            Paragraph paragraph = new Paragraph(licence.getCompany(), f);
             paragraph.setAlignment(Element.ALIGN_CENTER);
 
             document.add(paragraph);
             addEmptyLine(paragraph, 5);
 
-            paragraph = new Paragraph(licence.getAddress1());
+            paragraph = new Paragraph(licence.getAddress1(), f);
             paragraph.setAlignment(Element.ALIGN_CENTER);
             document.add(paragraph);
 
-            paragraph = new Paragraph(licence.getAddress2());
+            paragraph = new Paragraph(licence.getAddress2(), f);
             paragraph.setAlignment(Element.ALIGN_CENTER);
             document.add(paragraph);
 
-            paragraph = new Paragraph(licence.getAddress3());
+            paragraph = new Paragraph(licence.getAddress3(), f);
             paragraph.setAlignment(Element.ALIGN_CENTER);
             addEmptyLine(paragraph, 1);
 
             document.add(paragraph);
 
             PdfPTable table = new PdfPTable(2);
-            PdfPCell c1 = new PdfPCell(new Phrase("Date: "));
+            PdfPCell c1 = new PdfPCell(new Phrase("Date: ", f));
             c1.setBorder(Rectangle.NO_BORDER);
             c1.setHorizontalAlignment(Element.ALIGN_LEFT);
             table.addCell(c1);
 
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             Calendar cal = Calendar.getInstance();
-            c1 = new PdfPCell(new Phrase(dateFormat.format(cal.getTime())));
+            c1 = new PdfPCell(new Phrase(dateFormat.format(cal.getTime()), f));
             c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
             c1.setBorder(Rectangle.NO_BORDER);
             table.addCell(c1);
 
-            c1 = new PdfPCell(new Phrase("Ref: "));
+            c1 = new PdfPCell(new Phrase("Ref: ", f));
             c1.setBorder(Rectangle.NO_BORDER);
             c1.setHorizontalAlignment(Element.ALIGN_LEFT);
             table.addCell(c1);
 
-            c1 = new PdfPCell(new Phrase(barcode));
+            c1 = new PdfPCell(new Phrase(barcode, f));
             c1.setBorder(Rectangle.NO_BORDER);
             c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
             table.addCell(c1);
@@ -109,13 +114,50 @@ public class PrintInvoice {
 
             document.add(paragraph);
 
+            table = new PdfPTable(4);
+            c1 = new PdfPCell(new Phrase("Item", f));
+            c1.setBorder(Rectangle.NO_BORDER);
+            c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(c1);
+
+            c1 = new PdfPCell(new Phrase("Price", f));
+            c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            c1.setBorder(Rectangle.NO_BORDER);
+            table.addCell(c1);
+
+            c1 = new PdfPCell(new Phrase("Qty", f));
+            c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            c1.setBorder(Rectangle.NO_BORDER);
+            table.addCell(c1);
+
+            c1 = new PdfPCell(new Phrase("Total", f));
+            c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            c1.setBorder(Rectangle.NO_BORDER);
+            table.addCell(c1);
+            table.setHeaderRows(1);
+            document.add(table);
+
             table = createTable();
             document.add(table);
 
             addEmptyLine(paragraph, 5);
 
-            paragraph = new Paragraph("Thank you for shopping with us!");
+            paragraph = new Paragraph("Thank you for shopping with us!", f);
             paragraph.setAlignment(Element.ALIGN_CENTER);
+            document.add(paragraph);
+
+            paragraph = new Paragraph("_");
+            document.add(paragraph);
+
+            paragraph = new Paragraph("_");
+            document.add(paragraph);
+
+            paragraph = new Paragraph("_");
+            document.add(paragraph);
+
+            paragraph = new Paragraph("_");
+            document.add(paragraph);
+            paragraph = new Paragraph("_");
             document.add(paragraph);
 
             document.close();
@@ -125,46 +167,29 @@ public class PrintInvoice {
     }
 
     private PdfPTable createTable() {
+        Font f=new Font(Font.FontFamily.TIMES_ROMAN,9.0f,Font.NORMAL,BaseColor.BLACK);
+
         double total = 0;
         PdfPTable table = new PdfPTable(4);
-        PdfPCell c1 = new PdfPCell(new Phrase("Item"));
-        c1.setBorder(Rectangle.NO_BORDER);
-        c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-        table.addCell(c1);
-
-        c1 = new PdfPCell(new Phrase("Price"));
-        c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-        c1.setBorder(Rectangle.NO_BORDER);
-        table.addCell(c1);
-
-        c1 = new PdfPCell(new Phrase("Quantity"));
-        c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-        c1.setBorder(Rectangle.NO_BORDER);
-        table.addCell(c1);
-
-        c1 = new PdfPCell(new Phrase("Total"));
-        c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-        c1.setBorder(Rectangle.NO_BORDER);
-        table.addCell(c1);
-        table.setHeaderRows(1);
+        PdfPCell c1 = null;
 
         for (Item i : items) {
-            c1 = new PdfPCell(new Phrase(i.getItemName()));
+            c1 = new PdfPCell(new Phrase(i.getItemName(), f));
             c1.setHorizontalAlignment(Element.ALIGN_LEFT);
             c1.setBorder(Rectangle.NO_BORDER);
             table.addCell(c1);
 
-            c1 = new PdfPCell(new Phrase(String.valueOf(df.format(i.getUnitPrice()))));
+            c1 = new PdfPCell(new Phrase(String.valueOf(df.format(i.getUnitPrice())), f));
             c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
             c1.setBorder(Rectangle.NO_BORDER);
             table.addCell(c1);
 
-            c1 = new PdfPCell(new Phrase(String.valueOf(df.format(i.getQuantity()))));
+            c1 = new PdfPCell(new Phrase(String.valueOf((int)i.getQuantity()), f));
             c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
             c1.setBorder(Rectangle.NO_BORDER);
             table.addCell(c1);
 
-            c1 = new PdfPCell(new Phrase(String.valueOf(df.format(i.getTotal()))));
+            c1 = new PdfPCell(new Phrase(String.valueOf(df.format(i.getTotal())), f));
             c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
             c1.setBorder(Rectangle.NO_BORDER);
             table.addCell(c1);
@@ -192,7 +217,7 @@ public class PrintInvoice {
         c1.setBorder(Rectangle.NO_BORDER);
         table.addCell(c1);
 
-        c1 = new PdfPCell(new Phrase("TOTAL"));
+        c1 = new PdfPCell(new Phrase("TOTAL", f));
         c1.setHorizontalAlignment(Element.ALIGN_CENTER);
         c1.setBorder(Rectangle.NO_BORDER);
         table.addCell(c1);
@@ -207,7 +232,7 @@ public class PrintInvoice {
         c1.setBorder(Rectangle.NO_BORDER);
         table.addCell(c1);
 
-        c1 = new PdfPCell(new Phrase(df.format(total)));
+        c1 = new PdfPCell(new Phrase(df.format(total), f));
         c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
         c1.setBorder(Rectangle.NO_BORDER);
         table.addCell(c1);
@@ -221,14 +246,17 @@ public class PrintInvoice {
         }
     }
 
+    // todo: print using fiscal receipt
     public void printReceipt() throws PrinterException, IOException {
         PDDocument document = PDDocument.load(new File("C:/Users/Administrator/Documents/IdeaProjects/JavaFX-Point-of-Sales/Report.pdf"));
 
-        PrintService myPrintService = findPrintService("HP LaserJet CP1525N UPD PCL 6");
+        PrintService myPrintService = findPrintService("POS-80");
 
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPageable(new PDFPageable(document));
         job.setPrintService(myPrintService);
+
+        // todo: uncomment to print
         job.print();
     }
 

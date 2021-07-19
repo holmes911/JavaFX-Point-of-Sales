@@ -22,7 +22,7 @@ public class AddController implements Initializable, EmployeeInterface {
     @FXML
     private TextField firstField, lastField, usernameField, phoneField;
     @FXML
-    private PasswordField passwordField;
+    private PasswordField passwordField, supervisorCodeField;
     @FXML
     private TextArea addressArea;
     @FXML
@@ -42,6 +42,7 @@ public class AddController implements Initializable, EmployeeInterface {
         passwordField.setText("");
         phoneField.setText("");
         addressArea.setText("");
+        supervisorCodeField.setText("");
     }
 
     @FXML
@@ -55,7 +56,8 @@ public class AddController implements Initializable, EmployeeInterface {
                     usernameField.getText(),
                     DigestUtils.sha1Hex(passwordField.getText()),
                     phoneField.getText(),
-                    addressArea.getText()
+                    addressArea.getText(),
+                    supervisorCodeField.getText()
             );
 
             employeeModel.saveEmployee(employee);

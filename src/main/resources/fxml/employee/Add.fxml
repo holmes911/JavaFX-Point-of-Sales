@@ -53,6 +53,7 @@
                   <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="100.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
@@ -86,8 +87,15 @@
                         <Insets right="10.0" />
                      </GridPane.margin>
                   </PasswordField>
-                  <Label text="Phone" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
-                  <TextField fx:id="phoneField" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                   <Label text="Supervisor Code" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+                   <PasswordField fx:id="supervisorCodeField" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                       <GridPane.margin>
+                           <Insets right="10.0" />
+                       </GridPane.margin>
+                   </PasswordField>
+
+                   <Label text="Phone" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+                  <TextField fx:id="phoneField" GridPane.columnIndex="1" GridPane.rowIndex="6">
                      <GridPane.margin>
                         <Insets right="10.0" />
                      </GridPane.margin>

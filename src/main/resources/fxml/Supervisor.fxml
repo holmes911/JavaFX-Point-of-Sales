@@ -3,11 +3,17 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="406.0" prefWidth="450.0" styleClass="vBox-background" stylesheets="@../styles/invoice.css" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="430.0" VBox.vgrow="NEVER">
          <children>
+            <Label prefHeight="17.0" prefWidth="402.0" text="Enter Supervisor Code" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
             <Button mnemonicParsing="false" onAction="#closeAction" prefHeight="25.0" prefWidth="25.0" styleClass="close-button" />
          </children>
          <padding>
@@ -29,11 +35,9 @@
                   <RowConstraints />
               </rowConstraints>
                <children>
-                <TextField fx:id="totalAmountField" alignment="CENTER" editable="false" />
-                <TextField fx:id="paidAmountField" alignment="CENTER" promptText="Paid Amount" GridPane.rowIndex="1" />
-                <Button mnemonicParsing="false" onAction="#confirmAction" prefHeight="44.0" prefWidth="351.0" styleClass="buttons" text="CASH" GridPane.rowIndex="2" />
-                <Button mnemonicParsing="false" onAction="#ecocashTransaction" prefHeight="44.0" prefWidth="351.0" styleClass="buttons" text="ECOCASH" GridPane.rowIndex="3" />
-                <Button mnemonicParsing="false" onAction="#bankCardTransaction" prefHeight="44.0" prefWidth="351.0" styleClass="buttons" text="ZIMSWITCH" GridPane.rowIndex="5" />
+                <PasswordField fx:id="supervisorCodeTextField" alignment="CENTER" editable="true" />
+                <Button mnemonicParsing="false" onAction="#confirmAction" prefHeight="24.0" prefWidth="351.0" styleClass="buttons" text="Confirm" GridPane.rowIndex="2" />
+
                </children>
             </GridPane>
          </children>

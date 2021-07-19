@@ -4,6 +4,8 @@ import com.rafsan.inventory.entity.Item;
 import com.rafsan.inventory.entity.Payment;
 import com.rafsan.inventory.entity.Product;
 import com.rafsan.inventory.model.ProductModel;
+
+import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -226,15 +228,41 @@ public class PosController implements Initializable, ProductInterface {
     }
 
     @FXML
-    public void addAction(ActionEvent event) {
-        addAction();
-    }
+    public void addAction(ActionEvent event) throws IOException {
+        double quantity = Double.parseDouble(quantityField.getText());
 
-    private void addAction() {
+        if (quantity < 0){
+            // validate input for admin
+            FXMLLoader loader = new FXMLLoader((getClass().getResource("/fxml/Supervisor.fxml")));
+            SupervisorController controller = new SupervisorController();
+
+            loader.setController(controller);
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            root.setOnMousePressed((MouseEvent e) -> {
+                xOffset = e.getSceneX();
+                yOffset = e.getSceneY();
+            });
+            root.setOnMouseDragged((MouseEvent e) -> {
+                stage.setX(e.getScreenX() - xOffset);
+                stage.setY(e.getScreenY() - yOffset);
+            });
+            Scene scene = new Scene(root);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Payment");
+            stage.initStyle(StageStyle.UNDECORATED);
+            stage.getIcons().add(new Image("/images/logo.png"));
+            stage.setScene(scene);
+            stage.showAndWait();
+
+            if (!controller.authorised){
+                resetInterface();
+            }
+        }
+
         if (validateInput()) {
             String productName = productField.getText();
             double unitPrice = Double.parseDouble(priceField.getText());
-            double quantity = Double.parseDouble(quantityField.getText());
             double total = unitPrice * quantity;
             ITEMLIST.add(new Item(productName, Precision.round(unitPrice,2), quantity, Precision.round(total,2)));
             calculation();
@@ -250,7 +278,8 @@ public class PosController implements Initializable, ProductInterface {
         subTotalPrice = listTableView.getItems().stream().map(
                 (item) -> item.getTotal()).reduce(subTotalPrice, (accumulator, _item) -> accumulator + _item);
 
-        if (subTotalPrice > 0) {
+        //if (subTotalPrice > 0)
+        {
             paymentButton.setDisable(false);
             double vat = 0;// (double) subTotalPrice;// * 0.025;
             double netPayablePrice = (double) (Math.abs((subTotalPrice + vat)));

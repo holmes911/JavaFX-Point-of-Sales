@@ -22,7 +22,7 @@ public class EditController implements Initializable, EmployeeInterface {
     @FXML
     private TextField firstField, lastField, usernameField, phoneField;
     @FXML
-    private PasswordField passwordField;
+    private PasswordField passwordField, supervisorCodeField;
     @FXML
     private TextArea addressArea;
     @FXML
@@ -55,7 +55,8 @@ public class EditController implements Initializable, EmployeeInterface {
                     usernameField.getText(),
                     DigestUtils.sha1Hex(passwordField.getText()),
                     phoneField.getText(),
-                    addressArea.getText()
+                    addressArea.getText(),
+                    supervisorCodeField.getText()
             );
 
             employeeModel.updateEmployee(editedEmployee);
@@ -78,6 +79,7 @@ public class EditController implements Initializable, EmployeeInterface {
         passwordField.setText(employee.getPassword());
         phoneField.setText(employee.getPhone());
         addressArea.setText(employee.getAddress());
+        supervisorCodeField.setText(employee.getSupervisorCode());
     }
 
     private void resetValues() {
@@ -87,6 +89,11 @@ public class EditController implements Initializable, EmployeeInterface {
         passwordField.setText("");
         phoneField.setText("");
         addressArea.setText("");
+        try {
+            supervisorCodeField.setText("");
+        }catch (NullPointerException npex){
+
+        }
     }
 
     @FXML
