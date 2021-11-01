@@ -9,16 +9,15 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.rafsan.inventory.entity.Item;
 
 import java.awt.print.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Properties;
 
 import com.rafsan.inventory.entity.Licence;
+import com.rafsan.inventory.entity.Sale;
 import com.rafsan.inventory.model.LicenceModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,17 +32,21 @@ import javax.print.PrintServiceLookup;
 public class PrintInvoice {
 
     private final ObservableList<Item> items;
+    private final Sale sale;
     private final String barcode;
     private LicenceModel licenceModel;
     DecimalFormat df =new DecimalFormat("0.00");
+    private static Properties prop = null;
 
-    public PrintInvoice(ObservableList<Item> items, String barcode) {
+    public PrintInvoice(ObservableList<Item> items, String barcode, Sale sale) {
         licenceModel = new LicenceModel();
         this.items = FXCollections.observableArrayList(items);
         this.barcode = barcode;
+        this.sale = sale;
     }
 
-    public void generateReport() {
+    public void generateReport(Sale sale, boolean typeCopy) {
+
         Licence licence = licenceModel.getLicence(1);
         try {
             Document document = new Document();
@@ -54,15 +57,15 @@ public class PrintInvoice {
             FileOutputStream fs = new FileOutputStream("Report.pdf");
             PdfWriter writer = PdfWriter.getInstance(document, fs);
             document.open();
-
+/*
             PdfContentByte cb = writer.getDirectContent();
             BarcodeEAN codeEAN = new BarcodeEAN();
             codeEAN.setCodeType(codeEAN.EAN13);
             codeEAN.setCode(barcode);
             codeEAN.setTextAlignment(Element.ALIGN_CENTER);
             document.add(codeEAN.createImageWithBarcode(cb, BaseColor.BLACK, BaseColor.DARK_GRAY));
-
-            Font f=new Font(Font.FontFamily.TIMES_ROMAN,9.0f,Font.BOLD,BaseColor.BLACK);
+*/
+            Font f=new Font(Font.FontFamily.TIMES_ROMAN,9.0f,Font.NORMAL,BaseColor.BLACK);
             Paragraph paragraph = new Paragraph(licence.getCompany(), f);
             paragraph.setAlignment(Element.ALIGN_CENTER);
 
@@ -106,6 +109,54 @@ public class PrintInvoice {
             c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
             table.addCell(c1);
 
+            if (sale.getChannel() != null){
+                c1 = new PdfPCell(new Phrase(sale.getChannel(), f));
+                c1.setBorder(Rectangle.NO_BORDER);
+                c1.setHorizontalAlignment(Element.ALIGN_LEFT);
+                table.addCell(c1);
+
+                c1 = new PdfPCell(new Phrase(""));
+                c1.setBorder(Rectangle.NO_BORDER);
+                c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                table.addCell(c1);
+            }
+
+            if (sale.getRrn() != null){
+                c1 = new PdfPCell(new Phrase("RRN: ", f));
+                c1.setBorder(Rectangle.NO_BORDER);
+                c1.setHorizontalAlignment(Element.ALIGN_LEFT);
+                table.addCell(c1);
+
+                c1 = new PdfPCell(new Phrase(sale.getRrn(), f));
+                c1.setBorder(Rectangle.NO_BORDER);
+                c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                table.addCell(c1);
+            }
+
+            if (sale.getImei() != null){
+                c1 = new PdfPCell(new Phrase("IMEI: ", f));
+                c1.setBorder(Rectangle.NO_BORDER);
+                c1.setHorizontalAlignment(Element.ALIGN_LEFT);
+                table.addCell(c1);
+
+                c1 = new PdfPCell(new Phrase(sale.getImei(), f));
+                c1.setBorder(Rectangle.NO_BORDER);
+                c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                table.addCell(c1);
+            }
+
+            if (sale.getPan() != null){
+                c1 = new PdfPCell(new Phrase("PAN: ", f));
+                c1.setBorder(Rectangle.NO_BORDER);
+                c1.setHorizontalAlignment(Element.ALIGN_LEFT);
+                table.addCell(c1);
+
+                c1 = new PdfPCell(new Phrase(sale.getPan(), f));
+                c1.setBorder(Rectangle.NO_BORDER);
+                c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                table.addCell(c1);
+            }
+
             document.add(table);
 
             paragraph = new Paragraph(" ");
@@ -134,65 +185,80 @@ public class PrintInvoice {
             c1.setHorizontalAlignment(Element.ALIGN_CENTER);
             c1.setBorder(Rectangle.NO_BORDER);
             table.addCell(c1);
-            table.setHeaderRows(1);
+
+            if (typeCopy)
+                document.add(table);
+
+            table = createTable(typeCopy);
             document.add(table);
 
-            table = createTable();
-            document.add(table);
+            if (!sale.getChannel().equalsIgnoreCase("CASH")){
+                paragraph = new Paragraph("Approved By Pin", f);
+                paragraph.setAlignment(Element.ALIGN_CENTER);
+                document.add(paragraph);
+            }
+
+            if (typeCopy){
+                paragraph = new Paragraph("Customer Copy", f);
+                paragraph.setAlignment(Element.ALIGN_CENTER);
+                document.add(paragraph);
+            }else{
+                paragraph = new Paragraph("Merchant Copy", f);
+                paragraph.setAlignment(Element.ALIGN_CENTER);
+                document.add(paragraph);
+            }
 
             addEmptyLine(paragraph, 5);
 
-            paragraph = new Paragraph("Thank you for shopping with us!", f);
+            paragraph = new Paragraph("Thank you for shopping with us.", f);
             paragraph.setAlignment(Element.ALIGN_CENTER);
             document.add(paragraph);
 
-            paragraph = new Paragraph("_");
+            paragraph = new Paragraph("Please come again.", f);
+            paragraph.setAlignment(Element.ALIGN_CENTER);
             document.add(paragraph);
-
-            paragraph = new Paragraph("_");
-            document.add(paragraph);
-
-            paragraph = new Paragraph("_");
-            document.add(paragraph);
-
-            paragraph = new Paragraph("_");
-            document.add(paragraph);
-            paragraph = new Paragraph("_");
-            document.add(paragraph);
-
             document.close();
         } catch (DocumentException | FileNotFoundException ex) {
             System.out.println(ex.getMessage());
         }
     }
 
-    private PdfPTable createTable() {
+    private PdfPTable createTable(boolean typeCopy) {
         Font f=new Font(Font.FontFamily.TIMES_ROMAN,9.0f,Font.NORMAL,BaseColor.BLACK);
 
         double total = 0;
         PdfPTable table = new PdfPTable(4);
         PdfPCell c1 = null;
 
+
         for (Item i : items) {
             c1 = new PdfPCell(new Phrase(i.getItemName(), f));
             c1.setHorizontalAlignment(Element.ALIGN_LEFT);
             c1.setBorder(Rectangle.NO_BORDER);
-            table.addCell(c1);
+
+            if (typeCopy)
+                table.addCell(c1);
 
             c1 = new PdfPCell(new Phrase(String.valueOf(df.format(i.getUnitPrice())), f));
             c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
             c1.setBorder(Rectangle.NO_BORDER);
-            table.addCell(c1);
+
+            if (typeCopy)
+                table.addCell(c1);
 
             c1 = new PdfPCell(new Phrase(String.valueOf((int)i.getQuantity()), f));
             c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
             c1.setBorder(Rectangle.NO_BORDER);
-            table.addCell(c1);
+
+            if (typeCopy)
+                table.addCell(c1);
 
             c1 = new PdfPCell(new Phrase(String.valueOf(df.format(i.getTotal())), f));
             c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
             c1.setBorder(Rectangle.NO_BORDER);
-            table.addCell(c1);
+
+            if (typeCopy)
+                table.addCell(c1);
 
             total = total + i.getTotal();
         }
@@ -214,6 +280,48 @@ public class PrintInvoice {
 
         c1 = new PdfPCell(new Phrase(" "));
         c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+        c1.setBorder(Rectangle.NO_BORDER);
+        table.addCell(c1);
+
+        c1 = new PdfPCell(new Phrase("SUB", f));
+        c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+        c1.setBorder(Rectangle.NO_BORDER);
+        table.addCell(c1);
+
+        c1 = new PdfPCell(new Phrase("TOTAL", f));
+        c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+        c1.setBorder(Rectangle.NO_BORDER);
+        table.addCell(c1);
+
+        c1 = new PdfPCell(new Phrase(""));
+        c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+        c1.setBorder(Rectangle.NO_BORDER);
+        table.addCell(c1);
+
+        //c1 = new PdfPCell(new Phrase(df.format(total*0.855), f));
+        c1 = new PdfPCell(new Phrase(df.format(total*1), f));
+        c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        c1.setBorder(Rectangle.NO_BORDER);
+        table.addCell(c1);
+
+        c1 = new PdfPCell(new Phrase("VAT", f));
+        c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+        c1.setBorder(Rectangle.NO_BORDER);
+        table.addCell(c1);
+
+        c1 = new PdfPCell(new Phrase(""));
+        c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+        c1.setBorder(Rectangle.NO_BORDER);
+        table.addCell(c1);
+
+        c1 = new PdfPCell(new Phrase(""));
+        c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+        c1.setBorder(Rectangle.NO_BORDER);
+        table.addCell(c1);
+
+        //c1 = new PdfPCell(new Phrase(df.format(total*0.145), f));
+        c1 = new PdfPCell(new Phrase(df.format(total*0), f));
+        c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
         c1.setBorder(Rectangle.NO_BORDER);
         table.addCell(c1);
 
@@ -248,9 +356,10 @@ public class PrintInvoice {
 
     // todo: print using fiscal receipt
     public void printReceipt() throws PrinterException, IOException {
-        PDDocument document = PDDocument.load(new File("C:/Users/Administrator/Documents/IdeaProjects/JavaFX-Point-of-Sales/Report.pdf"));
+        PDDocument document = PDDocument.load(new File("Report.pdf"));
 
-        PrintService myPrintService = findPrintService("POS-80");
+        //PrintService myPrintService = findPrintService(prop.getProperty("printer.name"));
+        PrintService myPrintService = findPrintService("EPSON TM-T20II Receipt");
 
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPageable(new PDFPageable(document));
@@ -268,5 +377,15 @@ public class PrintInvoice {
             }
         }
         return null;
+    }
+
+    public static int loadConfigs() throws IOException {
+        try (InputStream input = new FileInputStream("config.properties")) {
+            prop = new Properties();
+            prop.load(input);
+        } catch (IOException ex) {
+            return -1;
+        }
+        return 0;
     }
 }

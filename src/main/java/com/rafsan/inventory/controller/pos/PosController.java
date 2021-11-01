@@ -281,10 +281,11 @@ public class PosController implements Initializable, ProductInterface {
         //if (subTotalPrice > 0)
         {
             paymentButton.setDisable(false);
-            double vat = 0;// (double) subTotalPrice;// * 0.025;
-            double netPayablePrice = (double) (Math.abs((subTotalPrice + vat)));
+            //double vat = (double) subTotalPrice * 0.145;
+            double vat = (double) subTotalPrice * 0;
+            double netPayablePrice = (double) (Math.abs((subTotalPrice)));
 
-            subTotalField.setText(String.valueOf(df.format(subTotalPrice)));
+            subTotalField.setText(String.valueOf(df.format(subTotalPrice - vat)));
             vatField.setText(String.valueOf(df.format(vat)));
             netPayableField.setText(String.valueOf(df.format(netPayablePrice)));
         }
@@ -296,7 +297,8 @@ public class PosController implements Initializable, ProductInterface {
         Payment payment = new Payment(
                 Double.parseDouble(subTotalField.getText().trim()),
                 Double.parseDouble(vatField.getText().trim()),
-                Double.parseDouble(discountField.getText().trim()),
+                //Double.parseDouble(discountField.getText().trim()),
+                0,
                 Double.parseDouble(netPayableField.getText().trim())
         );
 

@@ -9,6 +9,7 @@ C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\jav
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\entity\Invoice.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\controller\employee\EmployeeController.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\controller\admin\AdminController.java
+C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\controller\pos\SupervisorController.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\controller\product\EditController.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\controller\supplier\AddController.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\controller\pos\InvoiceController.java
@@ -19,6 +20,8 @@ C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\jav
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\HibernateUtil.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\controller\category\AddController.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\dao\SaleDao.java
+C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\entity\Licence.java
+C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\model\LicenceModel.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\entity\Item.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\dao\PurchaseDao.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\controller\report\ViewController.java
@@ -32,6 +35,7 @@ C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\jav
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\interfaces\EmployeeInterface.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\dao\EmployeeDao.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\entity\Employee.java
+C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\ipos\IPOSTransaction.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\entity\Supplier.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\interfaces\SupplierInterface.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\dao\InvoiceDao.java
@@ -49,6 +53,7 @@ C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\jav
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\entity\Category.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\pdf\PrintInvoice.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\interfaces\ReportInterface.java
+C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\dao\LicenceDao.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\controller\report\ReportController.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\controller\category\CategoryController.java
 C:\Users\Administrator\Documents\IdeaProjects\JavaFX-Point-of-Sales\src\main\java\com\rafsan\inventory\model\SalesModel.java

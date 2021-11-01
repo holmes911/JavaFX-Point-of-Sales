@@ -71,6 +71,9 @@ public class ProductModel implements ProductDao {
         p.setQuantity(product.getQuantity());
         p.setPrice(product.getPrice());
         p.setDescription(product.getDescription());
+        if (product.getBarcode().length() > 0){
+            p.setBarcode(product.getBarcode());
+        }
         session.getTransaction().commit();
     }
     

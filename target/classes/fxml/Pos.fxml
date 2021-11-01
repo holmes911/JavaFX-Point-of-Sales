@@ -172,17 +172,17 @@
                                        <GridPane.margin>
                                           <Insets right="5.0" />
                                        </GridPane.margin></Label>
-                                    <Label minHeight="-Infinity" prefHeight="25.0" text="(-)Discount" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                                    <!--<Label minHeight="-Infinity" prefHeight="25.0" text="(-)Discount" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                                        <GridPane.margin>
                                           <Insets right="5.0" />
-                                       </GridPane.margin></Label>
+                                       </GridPane.margin></Label> -->
                                     <Label minHeight="-Infinity" prefHeight="25.0" text="Net Payable" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                                        <GridPane.margin>
                                           <Insets right="5.0" />
                                        </GridPane.margin></Label>
                                     <TextField fx:id="subTotalField" alignment="CENTER_RIGHT" editable="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="120.0" text="0.00" GridPane.columnIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS" />
                                     <TextField fx:id="vatField" alignment="CENTER_RIGHT" editable="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="120.0" text="0.00" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS" />
-                                    <TextField fx:id="discountField" alignment="CENTER_RIGHT" editable="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="120.0" text="0.00" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS" />
+                                    <!--<TextField fx:id="discountField" alignment="CENTER_RIGHT" editable="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="120.0" text="0.00" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS" />-->
                                     <TextField fx:id="netPayableField" alignment="CENTER_RIGHT" editable="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="120.0" text="0.00" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS" />
                                  </children>
                                  <VBox.margin>

@@ -14,6 +14,7 @@ public class HibernateUtil {
                     .configure()
                     .buildSessionFactory();
         } catch (HibernateException ex) {
+            ex.printStackTrace();
             return false;
             
         }

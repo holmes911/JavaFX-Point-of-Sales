@@ -1,6 +1,7 @@
 package com.rafsan.inventory.controller.pos;
 
 import com.rafsan.inventory.entity.Item;
+import com.rafsan.inventory.entity.Sale;
 import com.rafsan.inventory.pdf.PrintInvoice;
 
 import java.awt.print.PrinterException;
@@ -26,6 +27,7 @@ public class ConfirmController implements Initializable {
     private double retail;
     private ObservableList<Item> items;
     private String barcode;
+    private Sale sale;
     DecimalFormat df =new DecimalFormat("0.00");
 
     @Override
@@ -55,19 +57,10 @@ public class ConfirmController implements Initializable {
         }
 
         billingArea.setText(details.toString());
-    }
 
-    public void setData(double retail, ObservableList<Item> items, String barcode) {
-        this.retail = retail;
-        this.items = FXCollections.observableArrayList(items);
-        this.barcode = barcode;
-    }
+        PrintInvoice pi = new PrintInvoice(items, barcode, sale);
+        pi.generateReport(sale, true);
 
-    @FXML
-    public void doneAction(ActionEvent event) {
-        billingArea.setText("");
-        PrintInvoice pi = new PrintInvoice(items, barcode);
-        pi.generateReport();
         try {
             pi.printReceipt();
         } catch (PrinterException e) {
@@ -75,6 +68,31 @@ public class ConfirmController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        if (!sale.getChannel().equalsIgnoreCase("CASH")){
+            // print merchant copy
+            pi.generateReport(sale, false);
+
+            try {
+                pi.printReceipt();
+            } catch (PrinterException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void setData(double retail, ObservableList<Item> items, String barcode, Sale sale) {
+        this.retail = retail;
+        this.items = FXCollections.observableArrayList(items);
+        this.barcode = barcode;
+        this.sale = sale;
+    }
+
+    @FXML
+    public void doneAction(ActionEvent event) {
+        billingArea.setText("");
         ((Node) (event.getSource())).getScene().getWindow().hide();
     }
 }

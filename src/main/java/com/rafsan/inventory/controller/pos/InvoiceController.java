@@ -68,6 +68,7 @@ public class InvoiceController implements Initializable {
 
     @FXML
     public void confirmAction(ActionEvent event) throws Exception {
+        Sale sale = null;
 
         if (validateInput()) {
             double paid = Double.parseDouble(paidAmountField.getText().trim());
@@ -95,7 +96,7 @@ public class InvoiceController implements Initializable {
                 p.setQuantity(quantity);
                 productModel.decreaseProduct(p);
 
-                Sale sale = new Sale(
+                sale = new Sale(
                         invoiceModel.getInvoice(invoiceId),
                         productModel.getProductByName(i.getItemName()),
                         i.getQuantity(),
@@ -108,7 +109,7 @@ public class InvoiceController implements Initializable {
 
             FXMLLoader loader = new FXMLLoader((getClass().getResource("/fxml/Confirm.fxml")));
             ConfirmController controller = new ConfirmController();
-            controller.setData(retail, items, invoiceId);
+            controller.setData(retail, items, invoiceId, sale);
             loader.setController(controller);
             Parent root = loader.load();
             Scene scene = new Scene(root);
@@ -132,6 +133,7 @@ public class InvoiceController implements Initializable {
     @FXML
     public void ecocashTransaction(ActionEvent event) throws Exception {
         paidAmountField.setText(totalAmountField.getText());
+        Sale sale = null;
 
         JSONObject request = new JSONObject();
         request.put("saleAmount", Double.parseDouble(totalAmountField.getText()) * 100);
@@ -170,7 +172,7 @@ public class InvoiceController implements Initializable {
                 p.setQuantity(quantity);
                 productModel.decreaseProduct(p);
 
-                Sale sale = new Sale(
+                sale = new Sale(
                         invoiceModel.getInvoice(invoiceId),
                         productModel.getProductByName(i.getItemName()),
                         i.getQuantity(),
@@ -189,7 +191,7 @@ public class InvoiceController implements Initializable {
 
             FXMLLoader loader = new FXMLLoader((getClass().getResource("/fxml/Confirm.fxml")));
             ConfirmController controller = new ConfirmController();
-            controller.setData(retail, items, invoiceId);
+            controller.setData(retail, items, invoiceId, sale);
             loader.setController(controller);
             Parent root = loader.load();
             Scene scene = new Scene(root);
@@ -218,6 +220,7 @@ public class InvoiceController implements Initializable {
     @FXML
     public void bankCardTransaction(ActionEvent event) throws Exception {
         paidAmountField.setText(totalAmountField.getText());
+        Sale sale = null;
 
         JSONObject request = new JSONObject();
         request.put("saleAmount", Double.parseDouble(totalAmountField.getText()) * 100);
@@ -256,7 +259,7 @@ public class InvoiceController implements Initializable {
                 p.setQuantity(quantity);
                 productModel.decreaseProduct(p);
 
-                Sale sale = new Sale(
+                sale = new Sale(
                         invoiceModel.getInvoice(invoiceId),
                         productModel.getProductByName(i.getItemName()),
                         i.getQuantity(),
@@ -275,7 +278,7 @@ public class InvoiceController implements Initializable {
 
             FXMLLoader loader = new FXMLLoader((getClass().getResource("/fxml/Confirm.fxml")));
             ConfirmController controller = new ConfirmController();
-            controller.setData(retail, items, invoiceId);
+            controller.setData(retail, items, invoiceId, sale);
             loader.setController(controller);
             Parent root = loader.load();
             Scene scene = new Scene(root);
