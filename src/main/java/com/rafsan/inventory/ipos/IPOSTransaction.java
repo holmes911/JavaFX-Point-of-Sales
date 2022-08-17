@@ -14,7 +14,7 @@ public class IPOSTransaction {
         // create request body
         RestTemplate restTemplate = new RestTemplate();
 
-        String url = "http://localhost:9111/api/requests";
+        String url = "http://140.82.34.240:8085/transaction/post";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -24,4 +24,35 @@ public class IPOSTransaction {
         System.out.println(answer);
         return new JSONObject(answer);
     }
+
+    public JSONObject pollTransaction(JSONObject request){
+        // create request body
+        RestTemplate restTemplate = new RestTemplate();
+
+        String url = "http://140.82.34.240:8085/transaction/erp/poll";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> entity = new HttpEntity<String>(request.toString(),headers);
+        String answer = restTemplate.postForObject(url, entity, String.class);
+        System.out.println(answer);
+        return new JSONObject(answer);
+    }
+
+
+/*    public JSONObject makeTransaction(JSONObject request){
+        // create request body
+        RestTemplate restTemplate = new RestTemplate();
+
+        String url = "http://localhost:9111/api/requests";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> entity = new HttpEntity<String>(request.toString(),headers);
+        String answer = restTemplate.postForObject(url, entity, String.class);
+        System.out.println(answer);
+        return new JSONObject(answer);
+    }*/
 }

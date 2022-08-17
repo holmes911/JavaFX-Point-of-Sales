@@ -139,82 +139,98 @@ public class InvoiceController implements Initializable {
         request.put("saleAmount", Double.parseDouble(totalAmountField.getText()) * 100);
         request.put("cashBack", "0");
         request.put("posUser", "");
-        request.put("tenderType", "MOBILE");
+        request.put("tenderType", "MOBILE-MONEY");
         request.put("currency", "RTGS");
         request.put("transactionId", "0001");
+        request.put("terminalId", "29000640");
 
         iposTransaction = new IPOSTransaction();
         JSONObject result = iposTransaction.makeTransaction(request);
 
-        if (result.get("code").equals("00")){
-            double paid = Double.parseDouble(paidAmountField.getText().trim());
-            double retail = Math.abs(paid - netPrice);
 
-            String invoiceId = String.valueOf(new Timestamp(System.currentTimeMillis()).getTime());
+        if (result.get("code").equals("00")) {
+            request = new JSONObject();
+            do {
+                request.put("id", result.getJSONObject("transaction").getInt("id"));
+                result = iposTransaction.pollTransaction(request);
+            } while (result.getJSONObject("transaction").get("code") == null);
 
-            Invoice invoice = new Invoice(
-                    invoiceId,
-                    employeeModel.getEmployee(2),
-                    payment.getSubTotal(),
-                    payment.getVat(),
-                    payment.getDiscount(),
-                    payment.getPayable(),
-                    paid,
-                    retail
-            );
+            if (result.get("code").equals("00")) {
+                double paid = Double.parseDouble(paidAmountField.getText().trim());
+                double retail = Math.abs(paid - netPrice);
 
-            invoiceModel.saveInvoice(invoice);
+                String invoiceId = String.valueOf(new Timestamp(System.currentTimeMillis()).getTime());
 
-            for (Item i : items) {
-
-                Product p = productModel.getProductByName(i.getItemName());
-                double quantity = p.getQuantity() - i.getQuantity();
-                p.setQuantity(quantity);
-                productModel.decreaseProduct(p);
-
-                sale = new Sale(
-                        invoiceModel.getInvoice(invoiceId),
-                        productModel.getProductByName(i.getItemName()),
-                        i.getQuantity(),
-                        i.getUnitPrice(),
-                        i.getTotal(),
-                        result.getString("rrn"),
-                        result.getString("code") + " : " + result.getString("description"),
-                        result.getString("ref"),
-                        result.getString("imei"),
-                        result.getString("pan"),
-                        "ECOCASH"
+                Invoice invoice = new Invoice(
+                        invoiceId,
+                        employeeModel.getEmployee(2),
+                        payment.getSubTotal(),
+                        payment.getVat(),
+                        payment.getDiscount(),
+                        payment.getPayable(),
+                        paid,
+                        retail
                 );
 
-                salesModel.saveSale(sale);
-            }
+                invoiceModel.saveInvoice(invoice);
 
-            FXMLLoader loader = new FXMLLoader((getClass().getResource("/fxml/Confirm.fxml")));
-            ConfirmController controller = new ConfirmController();
-            controller.setData(retail, items, invoiceId, sale);
-            loader.setController(controller);
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            root.setOnMousePressed((MouseEvent e) -> {
-                xOffset = e.getSceneX();
-                yOffset = e.getSceneY();
-            });
-            root.setOnMouseDragged((MouseEvent e) -> {
-                stage.setX(e.getScreenX() - xOffset);
-                stage.setY(e.getScreenY() - yOffset);
-            });
-            stage.setTitle("Confirm");
-            stage.getIcons().add(new Image("/images/logo.png"));
-            stage.setScene(scene);
-            stage.show();
+                for (Item i : items) {
+
+                    Product p = productModel.getProductByName(i.getItemName());
+                    double quantity = p.getQuantity() - i.getQuantity();
+                    p.setQuantity(quantity);
+                    productModel.decreaseProduct(p);
+
+                    sale = new Sale(
+                            invoiceModel.getInvoice(invoiceId),
+                            productModel.getProductByName(i.getItemName()),
+                            i.getQuantity(),
+                            i.getUnitPrice(),
+                            i.getTotal(),
+                            result.getString("rrn"),
+                            result.getString("code") + " : " + result.getString("description"),
+                            result.getString("ref"),
+                            result.getString("imei"),
+                            result.getString("pan"),
+                            "ECOCASH"
+                    );
+
+                    salesModel.saveSale(sale);
+                }
+
+                FXMLLoader loader = new FXMLLoader((getClass().getResource("/fxml/Confirm.fxml")));
+                ConfirmController controller = new ConfirmController();
+                controller.setData(retail, items, invoiceId, sale);
+                loader.setController(controller);
+                Parent root = loader.load();
+                Scene scene = new Scene(root);
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                root.setOnMousePressed((MouseEvent e) -> {
+                    xOffset = e.getSceneX();
+                    yOffset = e.getSceneY();
+                });
+                root.setOnMouseDragged((MouseEvent e) -> {
+                    stage.setX(e.getScreenX() - xOffset);
+                    stage.setY(e.getScreenY() - yOffset);
+                });
+                stage.setTitle("Confirm");
+                stage.getIcons().add(new Image("/images/logo.png"));
+                stage.setScene(scene);
+                stage.show();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Alert");
+                alert.setHeaderText("Transaction Failed");
+                alert.setContentText("[" + result.get("code") + "] " + result.get("description"));
+                alert.showAndWait();
+            }
         }else{
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Alert");
-            alert.setHeaderText("Transaction Failed");
-            alert.setContentText("[" + result.get("code") + "] " + result.get("description"));
-            alert.showAndWait();
-        }
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Alert");
+                alert.setHeaderText("Transaction Failed");
+                alert.setContentText("[" + result.get("code") + "] " + result.get("description"));
+                alert.showAndWait();
+            }
     }
 
     @FXML
@@ -226,75 +242,90 @@ public class InvoiceController implements Initializable {
         request.put("saleAmount", Double.parseDouble(totalAmountField.getText()) * 100);
         request.put("cashBack", "0");
         request.put("posUser", "");
-        request.put("tenderType", "SWIPE");
+        request.put("tenderType", "CARD-SWIPE");
         request.put("currency", "RTGS");
         request.put("transactionId", "0001");
+        request.put("terminalId", "29000640");
 
         iposTransaction = new IPOSTransaction();
         JSONObject result = iposTransaction.makeTransaction(request);
 
-        if (result.get("code").equals("00")){
-            double paid = Double.parseDouble(paidAmountField.getText().trim());
-            double retail = Math.abs(paid - netPrice);
+        if (result.get("code").equals("00")) {
+            request = new JSONObject();
+            do {
+                request.put("id", result.getJSONObject("transaction").getInt("id"));
+                result = iposTransaction.pollTransaction(request);
+            } while (result.getJSONObject("transaction").get("code") == null);
 
-            String invoiceId = String.valueOf(new Timestamp(System.currentTimeMillis()).getTime());
+            if (result.get("code").equals("00")) {
+                double paid = Double.parseDouble(paidAmountField.getText().trim());
+                double retail = Math.abs(paid - netPrice);
 
-            Invoice invoice = new Invoice(
-                    invoiceId,
-                    employeeModel.getEmployee(2),
-                    payment.getSubTotal(),
-                    payment.getVat(),
-                    payment.getDiscount(),
-                    payment.getPayable(),
-                    paid,
-                    retail
-            );
+                String invoiceId = String.valueOf(new Timestamp(System.currentTimeMillis()).getTime());
 
-            invoiceModel.saveInvoice(invoice);
-
-            for (Item i : items) {
-
-                Product p = productModel.getProductByName(i.getItemName());
-                double quantity = p.getQuantity() - i.getQuantity();
-                p.setQuantity(quantity);
-                productModel.decreaseProduct(p);
-
-                sale = new Sale(
-                        invoiceModel.getInvoice(invoiceId),
-                        productModel.getProductByName(i.getItemName()),
-                        i.getQuantity(),
-                        i.getUnitPrice(),
-                        i.getTotal(),
-                        result.getString("rrn"),
-                        result.getString("code") + " : " + result.getString("description"),
-                        result.getString("ref"),
-                        result.getString("imei"),
-                        result.getString("pan"),
-                        "ZIMSWITCH"
+                Invoice invoice = new Invoice(
+                        invoiceId,
+                        employeeModel.getEmployee(2),
+                        payment.getSubTotal(),
+                        payment.getVat(),
+                        payment.getDiscount(),
+                        payment.getPayable(),
+                        paid,
+                        retail
                 );
 
-                salesModel.saveSale(sale);
-            }
+                invoiceModel.saveInvoice(invoice);
 
-            FXMLLoader loader = new FXMLLoader((getClass().getResource("/fxml/Confirm.fxml")));
-            ConfirmController controller = new ConfirmController();
-            controller.setData(retail, items, invoiceId, sale);
-            loader.setController(controller);
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            root.setOnMousePressed((MouseEvent e) -> {
-                xOffset = e.getSceneX();
-                yOffset = e.getSceneY();
-            });
-            root.setOnMouseDragged((MouseEvent e) -> {
-                stage.setX(e.getScreenX() - xOffset);
-                stage.setY(e.getScreenY() - yOffset);
-            });
-            stage.setTitle("Confirm");
-            stage.getIcons().add(new Image("/images/logo.png"));
-            stage.setScene(scene);
-            stage.show();
+                for (Item i : items) {
+
+                    Product p = productModel.getProductByName(i.getItemName());
+                    double quantity = p.getQuantity() - i.getQuantity();
+                    p.setQuantity(quantity);
+                    productModel.decreaseProduct(p);
+
+                    sale = new Sale(
+                            invoiceModel.getInvoice(invoiceId),
+                            productModel.getProductByName(i.getItemName()),
+                            i.getQuantity(),
+                            i.getUnitPrice(),
+                            i.getTotal(),
+                            result.getString("rrn"),
+                            result.getString("code") + " : " + result.getString("description"),
+                            result.getString("ref"),
+                            result.getString("imei"),
+                            result.getString("pan"),
+                            "ZIMSWITCH"
+                    );
+
+                    salesModel.saveSale(sale);
+                }
+
+                FXMLLoader loader = new FXMLLoader((getClass().getResource("/fxml/Confirm.fxml")));
+                ConfirmController controller = new ConfirmController();
+                controller.setData(retail, items, invoiceId, sale);
+                loader.setController(controller);
+                Parent root = loader.load();
+                Scene scene = new Scene(root);
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                root.setOnMousePressed((MouseEvent e) -> {
+                    xOffset = e.getSceneX();
+                    yOffset = e.getSceneY();
+                });
+                root.setOnMouseDragged((MouseEvent e) -> {
+                    stage.setX(e.getScreenX() - xOffset);
+                    stage.setY(e.getScreenY() - yOffset);
+                });
+                stage.setTitle("Confirm");
+                stage.getIcons().add(new Image("/images/logo.png"));
+                stage.setScene(scene);
+                stage.show();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Alert");
+                alert.setHeaderText("Transaction Failed");
+                alert.setContentText("[" + result.get("code") + "] " + result.get("description"));
+                alert.showAndWait();
+            }
         }else{
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Alert");

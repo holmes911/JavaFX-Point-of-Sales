@@ -358,7 +358,7 @@ public class PrintInvoice {
     public void printReceipt() throws PrinterException, IOException {
         PDDocument document = PDDocument.load(new File("Report.pdf"));
 
-        //PrintService myPrintService = findPrintService(prop.getProperty("printer.name"));
+        //PrintService myPrintService = findPrintService(prop.getProperty(" printer.name"));
         PrintService myPrintService = findPrintService("EPSON TM-T20II Receipt");
 
         PrinterJob job = PrinterJob.getPrinterJob();
